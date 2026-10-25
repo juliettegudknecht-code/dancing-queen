@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dancing Queen</title>
+<meta name="description" content="Svenska för Arianna, med ABBA på radion.">
+<link rel="stylesheet" href="fonts/fonts.css?v=1">
+<link rel="stylesheet" href="style.css?v=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dancing Queen">
+<meta name="theme-color" content="#141a4a">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='54' r='40' fill='%23e6e9f5' stroke='%231c1240' stroke-width='6'/%3E%3Cpath d='M10 54h80M18 34h64M18 74h64M50 14v80M30 20v68M70 20v68' stroke='%23b7bdd6' stroke-width='3'/%3E%3Ccircle cx='36' cy='40' r='6' fill='%23ff5fa8'/%3E%3Ccircle cx='66' cy='64' r='6' fill='%23ffd166'/%3E%3C/svg%3E">
+</head>
+<body>
+<svg id="sky" aria-hidden="true"></svg>
+<div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
+
+<div class="wrap">
+<header class="top">
+  <button class="char j" id="charJ" aria-label="Arianna">
+    <span class="bubble" id="bubbleJ"></span>
+    <svg viewBox="0 0 200 270" xmlns="http://www.w3.org/2000/svg">
+      <!-- hair back, long and wavy -->
+      <path d="M52 108 C36 150 38 200 52 232 C60 240 70 232 74 222 L126 222 C130 232 140 240 148 232 C162 200 164 150 148 108 Z" fill="#6b3a2a" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <!-- flared legs -->
+      <path d="M70 188 C68 208 58 232 50 250 L94 250 C95 230 97 208 97 188 Z" fill="#ffd166" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M103 188 C103 208 105 230 106 250 L150 250 C142 232 132 208 130 188 Z" fill="#ffd166" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M56 236 h34 M110 236 h34" stroke="#e0a93a" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+      <!-- platform boots -->
+      <path d="M48 250 H94 V258 C94 264 88 268 80 268 H50 C44 268 42 262 46 256 Z" fill="#e6e9f5" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M106 250 H152 C156 256 154 268 148 268 H118 C110 268 106 264 106 258 Z" fill="#e6e9f5" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M48 259 h46 M106 259 h46" stroke="#1c1240" stroke-width="3"/>
+      <!-- jumpsuit body -->
+      <path d="M64 158 C60 178 62 196 68 196 L132 196 C138 196 140 178 136 158 C126 150 74 150 64 158 Z" fill="#ffd166" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <g fill="#fff" opacity=".75"><circle cx="78" cy="172" r="2"/><circle cx="92" cy="166" r="2"/><circle cx="110" cy="170" r="2"/><circle cx="124" cy="176" r="2"/><circle cx="84" cy="186" r="2"/><circle cx="116" cy="188" r="2"/><circle cx="100" cy="180" r="2"/></g>
+      <!-- belt -->
+      <rect x="64" y="188" width="72" height="11" rx="4" fill="#ff5fa8" stroke="#1c1240" stroke-width="3"/>
+      <circle cx="100" cy="193.5" r="5" fill="#ffd166" stroke="#1c1240" stroke-width="2.5"/>
+      <!-- left arm on the hip -->
+      <path d="M66 164 C46 176 40 196 50 212 L62 208 C56 198 60 184 76 174 Z" fill="#ffd166" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="58" cy="212" r="9" fill="#f6dcc8" stroke="#1c1240" stroke-width="4"/>
+      <!-- right arm up with the microphone -->
+      <path d="M134 166 C152 160 164 150 168 132 L156 128 C152 142 144 150 130 156 Z" fill="#ffd166" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="166" cy="122" r="9" fill="#f6dcc8" stroke="#1c1240" stroke-width="4"/>
+      <rect x="161" y="84" width="10" height="34" rx="4" fill="#e6e9f5" stroke="#1c1240" stroke-width="3"/>
+      <circle cx="166" cy="76" r="13" fill="#1c1240" stroke="#1c1240" stroke-width="3"/>
+      <path d="M156 72 h20 M156 80 h20 M166 64 v24" stroke="#8a8fb0" stroke-width="1.5"/>
+      <!-- wide pointed collar -->
+      <path d="M70 150 L100 174 L130 150 L138 162 L100 188 L62 162 Z" fill="#e6e9f5" stroke="#1c1240" stroke-width="3.5" stroke-linejoin="round"/>
+      <!-- neck -->
+      <rect x="90" y="140" width="20" height="14" fill="#f6dcc8" stroke="#1c1240" stroke-width="3"/>
+      <!-- face -->
+      <circle cx="100" cy="104" r="46" fill="#f6dcc8" stroke="#1c1240" stroke-width="4"/>
+      <!-- hair front with curtain bangs -->
+      <path d="M56 100 C56 70 74 52 100 52 C126 52 144 70 144 100 C138 84 128 76 112 80 C106 72 94 72 88 80 C72 76 62 86 56 100 Z" fill="#6b3a2a" stroke="#1c1240" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M58 104 C48 134 50 168 58 200" fill="none" stroke="#6b3a2a" stroke-width="12" stroke-linecap="round"/>
+      <path d="M142 104 C152 134 150 168 142 200" fill="none" stroke="#6b3a2a" stroke-width="12" stroke-linecap="round"/>
+      <!-- sparkly headband -->
+      <path d="M56 80 C70 62 130 62 144 80" fill="none" stroke="#1c1240" stroke-width="11" stroke-linecap="round"/>
+      <path d="M56 80 C70 62 130 62 144 80" fill="none" stroke="#ff5fa8" stroke-width="7" stroke-linecap="round"/>
+      <path d="M100 58 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z" fill="#ffd166" stroke="#1c1240" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- hoop earrings -->
+      <circle cx="57" cy="128" r="7" fill="none" stroke="#1c1240" stroke-width="5"/><circle cx="57" cy="128" r="7" fill="none" stroke="#ffd166" stroke-width="2.5"/>
+      <circle cx="143" cy="128" r="7" fill="none" stroke="#1c1240" stroke-width="5"/><circle cx="143" cy="128" r="7" fill="none" stroke="#ffd166" stroke-width="2.5"/>
+      <!-- eyes with gold shimmer, lashes, brows -->
+      <path d="M72 97 C78 90 90 90 94 97" fill="none" stroke="#ffe9a8" stroke-width="6" stroke-linecap="round" opacity=".95"/>
+      <path d="M106 97 C110 90 122 90 128 97" fill="none" stroke="#ffe9a8" stroke-width="6" stroke-linecap="round" opacity=".95"/>
+      <ellipse cx="83" cy="105" rx="9.5" ry="10.5" fill="#fff" stroke="#1c1240" stroke-width="3"/>
+      <ellipse cx="117" cy="105" rx="9.5" ry="10.5" fill="#fff" stroke="#1c1240" stroke-width="3"/>
+      <circle cx="84" cy="106" r="6" fill="#7a4a2a"/><circle cx="118" cy="106" r="6" fill="#7a4a2a"/>
+      <circle cx="84" cy="106" r="3" fill="#1c1240"/><circle cx="118" cy="106" r="3" fill="#1c1240"/>
+      <circle cx="86.5" cy="103" r="1.8" fill="#fff"/><circle cx="120.5" cy="103" r="1.8" fill="#fff"/>
+      <path d="M74 99 l-3 -3 M76 96 l-2 -4 M126 99 l3 -3 M124 96 l2 -4" stroke="#1c1240" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M72 86 C78 82 88 82 94 85 M106 85 C112 82 122 82 128 86" fill="none" stroke="#4a2a1e" stroke-width="3" stroke-linecap="round"/>
+      <!-- blush, nose, smile -->
+      <ellipse cx="70" cy="118" rx="7" ry="4" fill="#ffb6c6"/><ellipse cx="130" cy="118" rx="7" ry="4" fill="#ffb6c6"/>
+      <path d="M100 110 c-2 6 -1 10 3 10" fill="none" stroke="#1c1240" stroke-width="3" stroke-linecap="round"/>
+      <path d="M90 128 C96 134 106 134 112 128" fill="none" stroke="#1c1240" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <div class="title">
+    <h1>Dancing Queen</h1>
+    <p>Svenska för Arianna, med ABBA på radion.</p>
+    <div class="starbadge" id="starBadge" title="Stjärnor du har samlat">
+      <svg viewBox="0 0 100 100"><path d="M50 4 L60 40 L96 50 L60 60 L50 96 L40 60 L4 50 L40 40 Z" fill="#ffd166" stroke="#1c1240" stroke-width="6" stroke-linejoin="round"/></svg>
+      <span id="starCount">0</span>
+    </div>
+  </div>
+
+  <button class="char c" id="charC" aria-label="Glittra">
+    <span class="bubble" id="bubbleC"></span>
+    <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="ballclip"><circle cx="100" cy="142" r="86"/></clipPath>
+        <radialGradient id="ballshine" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#1c1240" stop-opacity=".25"/></radialGradient>
+      </defs>
+      <!-- string and little bow -->
+      <path d="M100 0 v50" stroke="#1c1240" stroke-width="4" stroke-linecap="round"/>
+      <path d="M100 48 l-16 -9 v18 z M100 48 l16 -9 v18 z" fill="#ff5fa8" stroke="#1c1240" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="100" cy="48" r="4.5" fill="#ffd166" stroke="#1c1240" stroke-width="2.5"/>
+      <!-- mirror ball -->
+      <circle cx="100" cy="142" r="86" fill="#e6e9f5" stroke="#1c1240" stroke-width="4"/>
+      <g clip-path="url(#ballclip)" stroke="#b7bdd6" stroke-width="2.2" fill="none">
+        <path d="M0 142 H200 M0 120 H200 M0 164 H200 M0 98 H200 M0 186 H200 M0 76 H200 M0 208 H200"/>
+        <path d="M100 56 V228 M78 56 V228 M122 56 V228 M56 56 V228 M144 56 V228 M34 70 V214 M166 70 V214"/>
+      </g>
+      <g clip-path="url(#ballclip)" opacity=".85">
+        <rect x="56" y="98" width="22" height="22" fill="#ff5fa8"/><rect x="122" y="164" width="22" height="22" fill="#ffd166"/><rect x="144" y="98" width="22" height="22" fill="#ffd166"/><rect x="34" y="164" width="22" height="22" fill="#5fa8ff"/><rect x="78" y="186" width="22" height="22" fill="#fff"/><rect x="100" y="76" width="22" height="22" fill="#fff"/><rect x="122" y="208" width="22" height="22" fill="#ff5fa8"/>
+      </g>
+      <circle cx="100" cy="142" r="86" fill="url(#ballshine)"/>
+      <!-- face -->
+      <circle cx="74" cy="132" r="15" fill="#fff" stroke="#1c1240" stroke-width="3"/>
+      <circle cx="126" cy="132" r="15" fill="#fff" stroke="#1c1240" stroke-width="3"/>
+      <circle cx="76" cy="134" r="8" fill="#1c1240"/><circle cx="128" cy="134" r="8" fill="#1c1240"/>
+      <circle cx="79" cy="130" r="3" fill="#fff"/><circle cx="131" cy="130" r="3" fill="#fff"/>
+      <path d="M62 112 C68 108 78 108 84 112 M116 112 C122 108 132 108 138 112" fill="none" stroke="#1c1240" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="58" cy="156" rx="9" ry="5" fill="#ff8fb4" opacity=".7"/><ellipse cx="142" cy="156" rx="9" ry="5" fill="#ff8fb4" opacity=".7"/>
+      <path d="M82 160 C90 174 110 174 118 160" fill="none" stroke="#1c1240" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M92 166 c3 6 13 6 16 0 z" fill="#ff8fb4" stroke="#1c1240" stroke-width="2"/>
+      <!-- sparkles -->
+      <path d="M22 60 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z" fill="#ffd166" stroke="#1c1240" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M178 90 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#ff5fa8" stroke="#1c1240" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M16 200 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#fff" stroke="#1c1240" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M184 196 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z" fill="#ffd166" stroke="#1c1240" stroke-width="2.5" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-view="home">Hem</button>
+  <button class="tab" data-view="cards">Kort</button>
+  <button class="tab" data-view="quiz">Quiz</button>
+  <button class="tab" data-view="verbs">Verb</button>
+  <button class="tab" data-view="phrases">Fraser</button>
+  <button class="tab" data-view="games">Spel</button>
+</nav>
+
+<main>
+<section id="view-home">
+  <div class="panel">
+    <h2 id="greeting">Hej, Arianna.</h2>
+    <p class="big" id="dateLine"></p>
+    <p id="starLine"></p>
+    <div class="row" style="margin-top:14px">
+      <button class="btn pink" data-go="quiz">Tio frågor</button>
+      <button class="btn lilac" data-go="cards">Korten</button>
+      <button class="btn blue" data-go="verbs">Ett verb</button>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="panel pink">
+      <h2>Dagens ord</h2>
+      <div class="row"><span class="word" id="wodFr"></span><button class="speak" id="wodSpeak" aria-label="Lyssna"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="#1c1240"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="#1c1240" stroke-width="2.2" stroke-linecap="round"/></svg></button></div>
+      <p class="big" id="wodEn"></p>
+      <p class="ex" id="wodEx"></p>
+    </div>
+    <div class="panel soft">
+      <h2>Din nivå</h2>
+      <div class="levels" id="levels">
+        <button class="btn plain" data-lvl="1">Repetition (B1)</button>
+        <button class="btn plain" data-lvl="2">Lagom (B2)</button>
+        <button class="btn plain" data-lvl="3">Ett snäpp till (C1)</button>
+      </div>
+      <p class="small" style="margin-top:12px">Du är redan bra på svenska, så Lagom ligger på B2 och är standard. Känns det för lätt tar du Ett snäpp till, och tunga dagar finns Repetition. Tryck på Arianna eller Glittra där uppe när du vill ha lite pepp. Radion i hörnet har ABBA på kanal ett. Under Spel klär du Arianna i scenkläder, gissar priser i kronor och böjer adjektiv. Markera vilken svenska som helst på sidan så dyker en Översätt-knapp upp.</p>
+    </div>
+  </div>
+  <div class="panel" id="progressPanel"></div>
+</section>
+
+<section id="view-cards" hidden>
+  <div class="panel">
+    <h2>Vilken planet i dag?</h2>
+    <div class="planets" id="deckPlanets"></div>
+  </div>
+  <div id="cardArea"></div>
+</section>
+
+<section id="view-quiz" hidden>
+  <div id="quizArea"></div>
+</section>
+
+<section id="view-verbs" hidden>
+  <div class="panel">
+    <h2>Böj det här</h2>
+    <div class="row">
+      <select id="verbSel"></select>
+      <select id="tenseSel">
+        <option value="pres">presens</option>
+        <option value="pret">preteritum</option>
+        <option value="perf">perfekt</option>
+        <option value="fut">futurum</option>
+      </select>
+      <button class="btn sm plain" id="verbTable">Visa tabellen</button>
+    </div>
+    <div id="verbArea" style="margin-top:18px"></div>
+    <div id="verbTableArea" style="margin-top:14px"></div>
+  </div>
+</section>
+
+<section id="view-games" hidden><div id="gameArea"></div></section>
+
+<section id="view-phrases" hidden>
+  <div class="panel">
+    <h2>Sånt du faktiskt säger</h2>
+    <div class="row" style="margin-bottom:8px">
+      <button class="btn sm plain" id="toggleEn">Dölj engelskan</button>
+      <button class="btn sm plain" id="challengeMode">Utmaning</button>
+      <button class="btn sm plain" id="shufflePhrases">Blanda</button>
+    </div>
+    <div id="phraseList"></div>
+  </div>
+</section>
+</main>
+
+<footer>Gjord med kärlek för Arianna, av Juliette. Framstegen sparas bara i den här webbläsaren. <a href="privacy.html">Integritet</a></footer>
+</div>
+
+<aside class="radio min" id="radio">
+  <div class="bar">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12" fill="none" stroke="#1c1240" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.6" fill="#ff5fa8" stroke="#1c1240" stroke-width="2.2"/><circle cx="16.5" cy="16" r="2.6" fill="#ffd166" stroke="#1c1240" stroke-width="2.2"/></svg>
+    <span>Radio</span>
+    <span class="np" id="nowPlaying">ABBA väntar på kanal ett.</span>
+    <button class="btn sm plain" id="radioPlay">Spela</button>
+    <button class="btn sm plain" id="radioToggle" aria-label="Öppna eller minimera">+</button>
+  </div>
+  <div class="body">
+    <div class="stations" id="stations"></div>
+    <div class="yt" id="yt"><div id="ytPlayer"></div></div>
+    <form class="custom" id="customForm">
+      <input type="text" id="customUrl" placeholder="Klistra in en YouTube-länk eller spellista">
+      <button class="btn sm lilac" type="submit">Kör</button>
+    </form>
+  </div>
+</aside>
+
+<script src="data.js?v=1"></script>
+<script src="app.js?v=1"></script>
+<script src="games.js?v=1"></script>
+<script src="english.js?v=1"></script>
+<script src="interactive.js?v=1"></script>
+<script src="disco.js?v=1"></script>
+<script src="path.js?v=1"></script>
+<script src="native.js?v=1"></script>
+</body>
+</html>
