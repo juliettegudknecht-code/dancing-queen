@@ -41,6 +41,6 @@
   if (window.DQ) window.DQ.flyIcon = () => Math.random() < .8 ? STAR : ball;
 
   // more things for them to say
-  if (window.DQ_GLITTRA_SAYS) window.DQ_GLITTRA_SAYS.push('Mamma mia!', 'Gimme gimme gimme.', 'Snurra mig, snälla.', 'Voulez-vous? Nej, på svenska.');
-  if (window.DQ_ARIANNA_SAYS) window.DQ_ARIANNA_SAYS.push('Mamma mia, här är vi igen.', 'Glittret först, grammatiken sen.', 'Juliette hälsar.', 'The winner takes it all.');
+  if (window.DQ_LANG !== 'fi' && window.DQ_GLITTRA_SAYS) window.DQ_GLITTRA_SAYS.push('Mamma mia!', 'Gimme gimme gimme.', 'Snurra mig, snälla.', 'Voulez-vous? Nej, på svenska.');
+  if (window.DQ_LANG !== 'fi' && window.DQ_ARIANNA_SAYS) window.DQ_ARIANNA_SAYS.push('Mamma mia, här är vi igen.', 'Glittret först, grammatiken sen.', 'Juliette hälsar.', 'The winner takes it all.');
 })();

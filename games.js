@@ -2,11 +2,12 @@
 (function () {
   'use strict';
   const L = window.DQ; if (!L) return;
-  const { $, $$, esc, rnd, shuffle, speak, award, norm, strip, SPK, INK } = L;
+  const { $, $$, esc, rnd, shuffle, speak, award, norm, strip, SPK, INK, FI } = L;
   const GOLD = '#ffd166', PINK = '#ff5fa8', SILVER = '#e6e9f5', SKIN = '#f6dcc8', HAIR = '#6b3a2a';
+  const F = window.DQ_FI || {};
 
   // ---------- Arianna with stage outfit layers ----------
-  const WEAR = [
+  const WEAR = FI ? F.WEAR : [
     { id: 'mantel', sv: 'den silvriga manteln', en: 'the silver cape', ask: 'Sätt på henne den silvriga manteln.' },
     { id: 'boa', sv: 'den rosa fjäderboan', en: 'the pink feather boa', ask: 'Ge henne den rosa fjäderboan.' },
     { id: 'glasogon', sv: 'de stora solglasögonen', en: 'the big sunglasses', ask: 'Sätt på henne de stora solglasögonen.' },
@@ -104,6 +105,8 @@
     { sv: 'en kaffe', def: 'kaffet', en: 'coffee', draw: `<path d="M24 34 H70 V66 C70 76 62 84 50 84 H44 C32 84 24 76 24 66 Z" fill="#fff" stroke="${INK}" stroke-width="3"/><path d="M70 42 C84 42 84 64 70 64" fill="none" stroke="${INK}" stroke-width="3"/><path d="M30 42 H64 V60 C64 66 60 70 54 70 H40 C34 70 30 66 30 60 Z" fill="#6b3a2a"/><path d="M40 20 c0 6 -4 6 -4 12 M52 18 c0 6 -4 6 -4 12" fill="none" stroke="${INK}" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>` },
     { sv: 'ett par vantar', def: 'vantarna', en: 'mittens', draw: `<path d="M26 84 V40 C26 28 40 28 40 40 V30 C40 22 52 22 52 30 V84 Z" fill="${PINK}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><path d="M56 84 V40 C56 28 70 28 70 40 V30 C70 22 82 22 82 30 V84 Z" fill="${PINK}" stroke="${INK}" stroke-width="3" stroke-linejoin="round" transform="translate(-4 0)"/><path d="M26 72 h26 M52 72 h26" stroke="#fff" stroke-width="4"/>` }
   ];
+  if (FI) F.SHOP.forEach((it, i) => { it.draw = SHOP[i].draw; });
+  const ITEMS = FI ? F.SHOP : SHOP;
   const ONES = ['noll', 'ett', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio', 'elva', 'tolv', 'tretton', 'fjorton', 'femton', 'sexton', 'sjutton', 'arton', 'nitton'];
   const TENS = ['', '', 'tjugo', 'trettio', 'fyrtio', 'femtio', 'sextio', 'sjuttio', 'åttio', 'nittio'];
   function numSv(n) {
@@ -112,42 +115,55 @@
     if (n < 1000) { const h = Math.floor(n / 100), r = n % 100; return (h === 1 ? 'hundra' : ONES[h] + 'hundra') + (r ? numSv(r) : ''); }
     const k = Math.floor(n / 1000), r = n % 1000; return (k === 1 ? 'tusen' : ONES[k] + 'tusen') + (r ? ' ' + numSv(r) : '');
   }
-  const kr = n => n === 1 ? 'en krona' : numSv(n) + ' kronor';
-  const PRICES = [15, 25, 39, 45, 59, 69, 79, 99, 129, 149, 179, 199, 249, 299, 349, 399, 499, 599, 799, 999, 1295, 1499, 1990, 2495, 2999, 3995];
+  const FONES = ['nolla', 'yksi', 'kaksi', 'kolme', 'neljä', 'viisi', 'kuusi', 'seitsemän', 'kahdeksan', 'yhdeksän', 'kymmenen'];
+  function numFi(n) {
+    if (n <= 10) return FONES[n];
+    if (n < 20) return FONES[n - 10] + 'toista';
+    if (n < 100) { const t = Math.floor(n / 10), u = n % 10; return FONES[t] + 'kymmentä' + (u ? FONES[u] : ''); }
+    if (n < 1000) { const h = Math.floor(n / 100), r = n % 100; return (h === 1 ? 'sata' : FONES[h] + 'sataa') + (r ? numFi(r) : ''); }
+    const k = Math.floor(n / 1000), r = n % 1000; return (k === 1 ? 'tuhat' : FONES[k] + 'tuhatta') + (r ? ' ' + numFi(r) : '');
+  }
+  const kr = n => FI ? (n === 1 ? 'yksi euro' : numFi(n) + ' euroa') : (n === 1 ? 'en krona' : numSv(n) + ' kronor');
+  const unit = FI ? '€' : 'kr';
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const costs = it => FI ? (it.pl ? 'maksavat' : 'maksaa') : 'kostar';
+  const PRICES = FI ? F.PRICES : [15, 25, 39, 45, 59, 69, 79, 99, 129, 149, 179, 199, 249, 299, 349, 399, 499, 599, 799, 999, 1295, 1499, 1990, 2495, 2999, 3995];
   let shop = null;
   function shopStart() { shop = { i: 0, n: 8, score: 0 }; shopNext(); }
   function shopNext() {
     const area = $('#gameArea');
     if (shop.i >= shop.n) { area.innerHTML = `<div class="panel pink"><h2>${shop.score} av ${shop.n}</h2><p class="big">${shop.score === shop.n ? 'Du kan gå på rea i Stockholm utan att blinka.' : shop.score >= 5 ? 'Svenska priser, nästan i hamn.' : 'Sjuttio och sjutton låter lika i farten. En runda till?'}</p><div class="row"><button class="btn pink" id="shopAgain">Igen</button><button class="btn plain" id="backGames">Andra spel</button></div></div>`; $('#shopAgain').onclick = shopStart; $('#backGames').onclick = gamesMenu; if (shop.score === shop.n) award(area, 3); return; }
-    const items = shuffle(SHOP).slice(0, 4).map(it => ({ ...it, price: 0 }));
+    const items = shuffle(ITEMS).slice(0, 4).map(it => ({ ...it, price: 0 }));
     const prices = shuffle(PRICES).slice(0, 4); items.forEach((it, k) => it.price = prices[k]);
     const target = rnd(items); const mode = Math.random() < 0.5 ? 'hear' : 'read';
-    const question = mode === 'hear' ? `Vad kostar ${target.def}? Lyssna och välj varan.` : `Vad kostar ${kr(target.price)}?`;
-    const say = mode === 'hear' ? `${target.def.charAt(0).toUpperCase() + target.def.slice(1)} kostar ${kr(target.price)}.` : question;
+    const question = FI
+      ? (mode === 'hear' ? `Paljonko ${target.def} ${costs(target)}? Kuuntele ja valitse tuote.` : `Mikä maksaa ${kr(target.price)}?`)
+      : (mode === 'hear' ? `Vad kostar ${target.def}? Lyssna och välj varan.` : `Vad kostar ${kr(target.price)}?`);
+    const say = mode === 'hear' ? `${cap(target.def)} ${costs(target)} ${kr(target.price)}.` : question;
     area.innerHTML = `<div class="panel"><div class="q row"><span class="fr">${esc(question)}</span><button class="speak" id="shopSpeak">${SPK}</button></div>
-      <div class="shelf" id="shelf">${items.map((it, k) => `<button class="shopitem" data-k="${k}"><svg viewBox="0 0 100 100">${it.draw}</svg><span class="tag">${it.price} kr</span><span class="small">${esc(it.sv)}</span></button>`).join('')}</div>
+      <div class="shelf" id="shelf">${items.map((it, k) => `<button class="shopitem" data-k="${k}"><svg viewBox="0 0 100 100">${it.draw}</svg><span class="tag">${it.price} ${unit}</span><span class="small">${esc(it.sv)}</span></button>`).join('')}</div>
       <div class="feedback" id="shopFb"></div><p class="small muted">${shop.i + 1} av ${shop.n}</p></div>`;
     $('#shopSpeak').onclick = () => speak(say); speak(say);
     $('#shelf').onclick = e => {
       const b = e.target.closest('[data-k]'); if (!b) return; const it = items[+b.dataset.k]; $$('.shopitem').forEach(x => x.disabled = true);
       const ok = it === target; if (ok) { shop.score++; award(b, 1); b.classList.add('right'); } else { b.classList.add('wrong'); $$('.shopitem')[items.indexOf(target)].classList.add('right'); }
-      $('#shopFb').innerHTML = `<span class="cheer">${ok ? rnd(window.DQ_CHEERS) : rnd(window.DQ_SOFT)}</span> ${esc(target.def.charAt(0).toUpperCase() + target.def.slice(1))} kostar ${target.price} kr: ${esc(kr(target.price))}.`;
+      $('#shopFb').innerHTML = `<span class="cheer">${ok ? rnd(window.DQ_CHEERS) : rnd(window.DQ_SOFT)}</span> ${esc(cap(target.def))} ${costs(target)} ${target.price} ${unit}: ${esc(kr(target.price))}.`;
       shop.i++; setTimeout(shopNext, ok ? 1500 : 2600);
     };
   }
 
   // ---------- game 3: Catwalken (en, ett, plural) ----------
   const NOUNS = [
-    { sv: 'klänning', g: 'en', en: 'dress', shape: 'M38 18 L62 18 L58 36 L80 84 L20 84 L42 36 Z' },
-    { sv: 'skärp', g: 'ett', en: 'belt', shape: 'M10 42 h80 v16 h-80 Z M42 38 h16 v24 h-16 Z' },
-    { sv: 'stövlar', g: 'pl', en: 'boots', shape: 'M24 14 H46 V70 C46 78 40 84 32 84 H14 C8 84 6 76 12 72 H24 Z M50 14 H72 V70 C72 78 78 84 86 84 H90 C92 84 92 76 86 72 H72 Z' },
-    { sv: 'hatt', g: 'en', en: 'hat', shape: 'M10 62 C8 46 30 36 52 38 C74 40 92 50 88 62 C70 56 40 54 10 62 Z M34 40 C36 26 64 26 66 40 Z' },
-    { sv: 'halsband', g: 'ett', en: 'necklace', shape: 'M14 30 C26 70 74 70 86 30 C78 56 22 56 14 30 Z M42 62 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0' },
-    { sv: 'jacka', g: 'en', en: 'jacket', shape: 'M30 20 L50 30 L70 20 L84 30 L78 86 L22 86 L16 30 Z' },
-    { sv: 'byxor', g: 'pl', en: 'trousers', shape: 'M26 16 H74 L80 84 H58 L50 44 L42 84 H20 Z' },
-    { sv: 'solglasögon', g: 'pl', en: 'sunglasses', shape: 'M6 40 h38 v26 h-38 Z M56 40 h38 v26 h-38 Z M44 48 h12 v6 h-12 Z' },
-    { sv: 'mantel', g: 'en', en: 'cape', shape: 'M50 14 L20 40 L14 88 L86 88 L80 40 Z' },
-    { sv: 'skor', g: 'pl', en: 'shoes', shape: 'M6 66 C16 54 36 56 48 46 L62 56 C72 60 78 64 78 70 L6 70 Z M22 86 C32 74 52 76 64 66 L78 76 C88 80 94 84 94 90 L22 90 Z' }
+    { key: 'dress', sv: 'klänning', g: 'en', en: 'dress', shape: 'M38 18 L62 18 L58 36 L80 84 L20 84 L42 36 Z' },
+    { key: 'belt', sv: 'skärp', g: 'ett', en: 'belt', shape: 'M10 42 h80 v16 h-80 Z M42 38 h16 v24 h-16 Z' },
+    { key: 'boots', sv: 'stövlar', g: 'pl', en: 'boots', shape: 'M24 14 H46 V70 C46 78 40 84 32 84 H14 C8 84 6 76 12 72 H24 Z M50 14 H72 V70 C72 78 78 84 86 84 H90 C92 84 92 76 86 72 H72 Z' },
+    { key: 'hat', sv: 'hatt', g: 'en', en: 'hat', shape: 'M10 62 C8 46 30 36 52 38 C74 40 92 50 88 62 C70 56 40 54 10 62 Z M34 40 C36 26 64 26 66 40 Z' },
+    { key: 'necklace', sv: 'halsband', g: 'ett', en: 'necklace', shape: 'M14 30 C26 70 74 70 86 30 C78 56 22 56 14 30 Z M42 62 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0' },
+    { key: 'jacket', sv: 'jacka', g: 'en', en: 'jacket', shape: 'M30 20 L50 30 L70 20 L84 30 L78 86 L22 86 L16 30 Z' },
+    { key: 'trousers', sv: 'byxor', g: 'pl', en: 'trousers', shape: 'M26 16 H74 L80 84 H58 L50 44 L42 84 H20 Z' },
+    { key: 'sunglasses', sv: 'solglasögon', g: 'pl', en: 'sunglasses', shape: 'M6 40 h38 v26 h-38 Z M56 40 h38 v26 h-38 Z M44 48 h12 v6 h-12 Z' },
+    { key: 'cape', sv: 'mantel', g: 'en', en: 'cape', shape: 'M50 14 L20 40 L14 88 L86 88 L80 40 Z' },
+    { key: 'shoes', sv: 'skor', g: 'pl', en: 'shoes', shape: 'M6 66 C16 54 36 56 48 46 L62 56 C72 60 78 64 78 70 L6 70 Z M22 86 C32 74 52 76 64 66 L78 76 C88 80 94 84 94 90 L22 90 Z' }
   ];
   const COLORS = [
     { f: ['röd', 'rött', 'röda'], hex: '#e03a3a', en: 'red' },
@@ -169,21 +185,36 @@
   function runwayNext() {
     const area = $('#gameArea');
     if (runway.i >= runway.n) { area.innerHTML = `<div class="panel pink"><h2>${runway.score} av ${runway.n}</h2><p class="big">${runway.score === runway.n ? 'Perfekt kongruens. Agnetha applåderar.' : runway.score >= 7 ? 'Catwalken är din, nästan.' : 'Adjektivet rättar sig efter substantivet: en, ett eller -a. En runda till?'}</p><div class="row"><button class="btn pink" id="rwAgain">Igen</button><button class="btn plain" id="backGames">Andra spel</button></div></div>`; $('#rwAgain').onclick = runwayStart; $('#backGames').onclick = gamesMenu; if (runway.score === runway.n) award(area, 3); return; }
-    let noun, color; do { noun = rnd(NOUNS); color = rnd(COLORS); } while (color.f[0] === color.f[1] && noun.g !== 'pl');
-    const right = phrase(noun, color, noun.g);
-    const wrongs = new Set();
-    const others = ['en', 'ett', 'pl'].filter(g => g !== noun.g);
-    others.forEach(g => { wrongs.add(`${ART[noun.g]}${color.f[idx(g)]} ${noun.sv}`); wrongs.add(`${ART[g]}${color.f[idx(g)]} ${noun.sv}`); });
-    let other; do { other = rnd(COLORS); } while (other === color); wrongs.add(phrase(noun, other, noun.g));
+    let noun, color, right, wrongs = new Set(), prompt = 'Vad har hon på sig?', why, plural, hex;
+    if (FI) {
+      // Finnish: the adjective agrees in number and case. Nominative after "Hänellä on", partitive after "Hänellä ei ole".
+      const fn = rnd(F.NOUNS); color = rnd(F.COLORS); noun = NOUNS.find(n => n.key === fn.key) || NOUNS[0];
+      plural = !fn.f[0] || Math.random() < 0.5; const part = Math.random() < 0.45;
+      const ix = (part ? 2 : 0) + (plural ? 1 : 0);
+      prompt = part ? 'Hänellä ei ole ___.' : 'Hänellä on ___.';
+      right = `${color.f[ix]} ${fn.f[ix]}`;
+      [0, 1, 2, 3].filter(k => k !== ix && fn.f[k]).forEach(k => { wrongs.add(`${color.f[k]} ${fn.f[ix]}`); });
+      [0, 1, 2, 3].filter(k => k !== ix && fn.f[k] && color.f[k] !== color.f[ix]).forEach(k => { wrongs.add(`${color.f[ix]} ${fn.f[k]}`); });
+      let other; do { other = rnd(F.COLORS); } while (other === color); wrongs.add(`${other.f[ix]} ${fn.f[ix]}`);
+      why = `${fn.f[plural ? 1 : 0]} on ${plural ? 'monikossa' : 'yksikössä'} ja ${part ? 'partitiivissa kiellon jälkeen' : 'nominatiivissa'}, ja adjektiivi taipuu samaan muotoon`;
+      hex = color.hex; noun = { ...noun, en: fn.en };
+    } else {
+      do { noun = rnd(NOUNS); color = rnd(COLORS); } while (color.f[0] === color.f[1] && noun.g !== 'pl');
+      right = phrase(noun, color, noun.g);
+      const others = ['en', 'ett', 'pl'].filter(g => g !== noun.g);
+      others.forEach(g => { wrongs.add(`${ART[noun.g]}${color.f[idx(g)]} ${noun.sv}`); wrongs.add(`${ART[g]}${color.f[idx(g)]} ${noun.sv}`); });
+      let other; do { other = rnd(COLORS); } while (other === color); wrongs.add(phrase(noun, other, noun.g));
+      why = noun.g === 'pl' ? `${noun.sv} är plural, så adjektivet får -a och ingen artikel` : noun.g === 'ett' ? `${noun.sv} är ett ett-ord, så ett och adjektivet får -t` : `${noun.sv} är ett en-ord, så en och grundformen`;
+      plural = noun.g === 'pl'; hex = color.hex;
+    }
     const opts = shuffle([right].concat(shuffle(Array.from(wrongs).filter(w => w !== right)).slice(0, 3)));
-    area.innerHTML = `<div class="panel"><div class="dress"><div class="runway-stage"><svg viewBox="0 0 100 100"><path d="${noun.shape}" fill="${color.hex}" stroke="${INK}" stroke-width="4" stroke-linejoin="round" fill-rule="evenodd"/></svg><div class="small muted">${noun.g === 'pl' ? 'plural' : 'singular'} ${esc(noun.en)}, ${color.en}</div></div><div>
-      <div class="q"><span class="fr">Vad har hon på sig?</span></div>
+    area.innerHTML = `<div class="panel"><div class="dress"><div class="runway-stage"><svg viewBox="0 0 100 100"><path d="${noun.shape}" fill="${hex}" stroke="${INK}" stroke-width="4" stroke-linejoin="round" fill-rule="evenodd"/></svg><div class="small muted">${plural ? 'plural' : 'singular'} ${esc(noun.en)}, ${color.en}</div></div><div>
+      <div class="q"><span class="fr">${esc(prompt)}</span></div>
       <div class="opts" id="rwOpts">${opts.map((o, k) => `<button class="opt" data-k="${k}">${esc(o)}</button>`).join('')}</div>
       <div class="feedback" id="rwFb"></div><p class="small muted">${runway.i + 1} av ${runway.n}</p></div></div></div>`;
     $('#rwOpts').onclick = e => {
       const b = e.target.closest('[data-k]'); if (!b) return; $$('#rwOpts .opt').forEach(x => { x.disabled = true; if (opts[+x.dataset.k] === right) x.classList.add('right'); });
       const ok = opts[+b.dataset.k] === right; if (!ok) b.classList.add('wrong'); else { runway.score++; award(b, 1); }
-      const why = noun.g === 'pl' ? `${noun.sv} är plural, så adjektivet får -a och ingen artikel` : noun.g === 'ett' ? `${noun.sv} är ett ett-ord, så ett och adjektivet får -t` : `${noun.sv} är ett en-ord, så en och grundformen`;
       $('#rwFb').innerHTML = `<span class="cheer">${ok ? rnd(window.DQ_CHEERS) : rnd(window.DQ_SOFT)}</span> ${esc(right)}. ${esc(why)}.`; speak(right);
       runway.i++; setTimeout(runwayNext, ok ? 1500 : 2800);
     };

@@ -3,12 +3,13 @@
   const $ = (s, el) => (el || document).querySelector(s);
   const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
   const DECKS = window.DQ_DECKS, VERBS = window.DQ_VERBS, GRAMMAR = window.DQ_GRAMMAR, PHRASES = window.DQ_PHRASES;
-  const PRONOUNS = ['jag', 'du', 'hon', 'han', 'vi', 'ni', 'de'];
-  const TENSES = { pres: 'presens', pret: 'preteritum', perf: 'perfekt', fut: 'futurum' };
+  const LANG = window.DQ_LANG || 'sv', FI = LANG === 'fi';
+  const PRONOUNS = FI ? ['minä', 'sinä', 'hän', 'me', 'te', 'he'] : ['jag', 'du', 'hon', 'han', 'vi', 'ni', 'de'];
+  const TENSES = FI ? { pres: 'preesens', imp: 'imperfekti', perf: 'perfekti', cond: 'konditionaali' } : { pres: 'presens', pret: 'preteritum', perf: 'perfekt', fut: 'futurum' };
   const INK = '#1c1240';
 
   // ---------- state ----------
-  const KEY = 'dq_v1';
+  const KEY = FI ? 'dq_fi_v1' : 'dq_v1';
   let S = { stars: 0, boxes: {}, quiz: [], level: 2, station: 'abba', radioOpen: false, days: [] };
   try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
@@ -36,15 +37,15 @@
   let voice = null;
   function pickVoice() {
     if (!window.speechSynthesis) return;
-    const vs = speechSynthesis.getVoices().filter(v => /^sv/i.test(v.lang));
-    voice = vs.find(v => /Alva|Klara|Oskar|Google svenska|Sofie/i.test(v.name)) || vs.find(v => /sv-SE/i.test(v.lang)) || vs[0] || null;
+    const vs = speechSynthesis.getVoices().filter(v => (FI ? /^fi/i : /^sv/i).test(v.lang));
+    voice = vs.find(v => (FI ? /Satu|Onni|Google suomi/i : /Alva|Klara|Oskar|Google svenska|Sofie/i).test(v.name)) || vs.find(v => (FI ? /fi-FI/i : /sv-SE/i).test(v.lang)) || vs[0] || null;
   }
   if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
   function speak(text) {
     if (!window.speechSynthesis) return;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text.replace(/\s*\([^)]*\)/g, ''));
-    u.lang = 'sv-SE'; u.rate = 0.92; if (voice) u.voice = voice;
+    u.lang = FI ? 'fi-FI' : 'sv-SE'; u.rate = 0.92; if (voice) u.voice = voice;
     speechSynthesis.speak(u);
   }
   const canSpeak = () => !!window.speechSynthesis;
@@ -115,7 +116,7 @@
     const h = new Date().getHours();
     $('#greeting').textContent = (h < 10 ? 'God morgon' : h < 18 ? 'Hej' : 'God kväll') + ', Arianna.';
     const d = new Date();
-    let dl = new Intl.DateTimeFormat('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
+    let dl = new Intl.DateTimeFormat(FI ? 'fi-FI' : 'sv-SE', { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
     $('#dateLine').textContent = 'I dag är det ' + dl + '.';
     const s = S.stars;
     $('#starLine').textContent = s === 0 ? 'Din himmel är tom än. Varje rätt svar tänder en stjärna.'
@@ -275,7 +276,7 @@
   }
 
   function accentRow(el, inp) {
-    el.innerHTML = 'å ä ö é Å Ä Ö'.split(' ').map(c => `<button type="button">${c}</button>`).join('');
+    el.innerHTML = (FI ? 'ä ö å Ä Ö Å' : 'å ä ö é Å Ä Ö').split(' ').map(c => `<button type="button">${c}</button>`).join('');
     el.onclick = e => { if (e.target.tagName !== 'BUTTON') return; const p = inp.selectionStart || inp.value.length; inp.value = inp.value.slice(0, p) + e.target.textContent + inp.value.slice(p); inp.focus(); inp.setSelectionRange(p + 1, p + 1); };
   }
 
@@ -289,8 +290,26 @@
     '4': 'Grupp 4: starkt eller oregelbundet verb. Vokalen byts, och formerna får man helt enkelt lära sig.',
     's': 'Deponens: verbet slutar på -s i alla former utan att vara passivt.'
   };
-  function conj(v, tense) {
-    let answers, note = GROUP_NOTE[v.grp] || '';
+  // Finnish verbs change with the person, so the Finnish set carries six forms per tense.
+  const TYPE_NOTE = {
+    '1': 'Verbityyppi 1: vartalo + persoonapääte. Astevaihtelu heikkenee minä-, sinä-, me- ja te-muodoissa.',
+    '2': 'Verbityyppi 2: infinitiivi päättyy -da tai -dä, hän-muodossa ei ole päätettä.',
+    '3': 'Verbityyppi 3: infinitiivi päättyy -lla, -nna, -rra tai -sta, vartaloon tulee e.',
+    '4': 'Verbityyppi 4: infinitiivi päättyy vokaali + ta tai tä, t katoaa ja vokaali jää.',
+    '5': 'Verbityyppi 5: infinitiivi päättyy -ita tai -itä, vartaloon tulee -itse-.',
+    '6': 'Verbityyppi 6: infinitiivi päättyy -eta tai -etä, vartaloon tulee -ene-.'
+  };
+  function conj(v, tense, p) {
+    let answers, note;
+    if (FI) {
+      note = TYPE_NOTE[v.type] || '';
+      if (tense === 'pres') answers = [v.pres[p]];
+      else if (tense === 'imp') answers = [v.imp[p]];
+      else if (tense === 'perf') { const olla = VERBS[0].pres[p]; answers = [olla + ' ' + (p < 3 ? v.part : v.part.slice(0, -2) + 'eet')]; note = 'Perfekti: olla-verbi taivutettuna + NUT-partisiippi, monikossa -neet. ' + note; }
+      else answers = [v.cond[p]];
+      return { answers, core: answers[0], note };
+    }
+    note = GROUP_NOTE[v.grp] || '';
     const alt = (v.alt && v.alt[tense]) || [];
     if (tense === 'pres') answers = [v.pres].concat(alt);
     else if (tense === 'pret') answers = [v.pret].concat(alt);
@@ -299,14 +318,18 @@
     return { answers, core: answers[0], note };
   }
   let vq = null;
-  function fillVerbSel() { const sel = $('#verbSel'); if (sel.options.length) return; VERBS.forEach((v, i) => { const o = document.createElement('option'); o.value = i; o.textContent = 'att ' + v.inf + ' (' + v.en + ')'; sel.appendChild(o); }); }
+  function fillVerbSel() {
+    const sel = $('#verbSel'); if (sel.options.length) return;
+    VERBS.forEach((v, i) => { const o = document.createElement('option'); o.value = i; o.textContent = (FI ? '' : 'att ') + v.inf + ' (' + v.en + ')'; sel.appendChild(o); });
+    const ts = $('#tenseSel'); ts.innerHTML = Object.keys(TENSES).map(k => `<option value="${k}">${TENSES[k]}</option>`).join('');
+  }
   function verbNew() {
     fillVerbSel();
-    const v = VERBS[+$('#verbSel').value || 0], tense = $('#tenseSel').value, pron = rnd(PRONOUNS);
-    vq = { v, tense, pron, c: conj(v, tense) };
+    const v = VERBS[+$('#verbSel').value || 0], tense = $('#tenseSel').value, p = Math.floor(Math.random() * PRONOUNS.length), pron = PRONOUNS[p];
+    vq = { v, tense, pron, p, c: conj(v, tense, p) };
     vq.display = pron + ' ' + vq.c.core;
-    const ph = tense === 'perf' ? 'med har' : tense === 'fut' ? 'med ska eller kommer att' : 'bara verbet';
-    $('#verbArea').innerHTML = `<div class="q"><span class="fr">${esc(pron)} ___</span> <span class="muted">(att ${esc(v.inf)}, ${TENSES[tense]})</span></div>
+    const ph = tense === 'perf' ? 'med har' : tense === 'fut' || tense === 'cond' ? 'med ska eller kommer att' : 'bara verbet';
+    $('#verbArea').innerHTML = `<div class="q"><span class="fr">${esc(pron)} ___</span> <span class="muted">(${FI ? '' : 'att '}${esc(v.inf)}, ${TENSES[tense]})</span></div>
       <form id="verbForm"><input type="text" id="verbIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${ph}"><div class="accents" id="vacc"></div>
       <div class="row" style="margin-top:12px"><button class="btn lilac" type="submit">Kolla</button><button class="btn sm plain" type="button" id="verbSkip">Jag vet inte</button></div></form><div class="feedback" id="vfb"></div>`;
     const inp = $('#verbIn'); accentRow($('#vacc'), inp); inp.focus();
@@ -326,8 +349,10 @@
     if (toggle) tableOpen = !tableOpen;
     $('#verbTable').textContent = tableOpen ? 'Dölj tabellen' : 'Visa tabellen';
     if (!tableOpen || !vq) { $('#verbTableArea').innerHTML = ''; return; }
-    const rows = Object.keys(TENSES).map(t => { const c = conj(vq.v, t); return `<tr><td>${TENSES[t]}</td><td>jag ${esc(c.core)}</td></tr>`; }).join('');
-    $('#verbTableArea').innerHTML = `<table><tr><td>infinitiv</td><td>att ${esc(vq.v.inf)}</td></tr>${rows}</table>`;
+    const rows = FI
+      ? PRONOUNS.map((pr, p) => { const c = conj(vq.v, vq.tense, p); return `<tr><td>${esc(pr)}</td><td>${esc(c.core)}</td></tr>`; }).join('')
+      : Object.keys(TENSES).map(t => { const c = conj(vq.v, t, 0); return `<tr><td>${TENSES[t]}</td><td>jag ${esc(c.core)}</td></tr>`; }).join('');
+    $('#verbTableArea').innerHTML = `<table><tr><td>${FI ? 'infinitiivi' : 'infinitiv'}</td><td>${FI ? '' : 'att '}${esc(vq.v.inf)}</td></tr>${rows}</table>`;
   }
   $('#verbTable').onclick = () => renderVerbTable(true);
   $('#verbSel').onchange = verbNew; $('#tenseSel').onchange = verbNew;
@@ -395,11 +420,11 @@
   async function translate(t) {
     const local = localLookup(t); if (local) return local;
     try {
-      const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=sv&tl=en&dt=t&q=' + encodeURIComponent(t));
+      const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + LANG + '&tl=en&dt=t&q=' + encodeURIComponent(t));
       if (r.ok) { const j = await r.json(); const out = (j[0] || []).map(x => x[0]).join(''); if (out) return out; }
     } catch (e) {}
     try {
-      const r = await fetch('https://api.mymemory.translated.net/get?langpair=sv|en&q=' + encodeURIComponent(t));
+      const r = await fetch('https://api.mymemory.translated.net/get?langpair=' + LANG + '|en&q=' + encodeURIComponent(t));
       if (r.ok) { const j = await r.json(); if (j.responseData && j.responseData.translatedText) return j.responseData.translatedText; }
     } catch (e) {}
     return null;
@@ -414,7 +439,7 @@
     trPop.querySelector('.speak').onclick = () => speak(t);
   });
 
-  window.DQ = { $, $$, esc, rnd, shuffle, speak, award, norm, strip, SPK, INK, allItems, byLevel, headword, level: () => S.level };
+  window.DQ = { $, $$, esc, rnd, shuffle, speak, award, norm, strip, SPK, INK, FI, allItems, byLevel, headword, level: () => S.level };
   // ---------- boot ----------
   renderSky(); renderHome();
 })();

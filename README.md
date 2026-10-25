@@ -6,6 +6,8 @@ Flashcards by planet (idioms, news and society, work and emails, feelings, Stock
 
 Content sits around B2 by default (Lagom), with a B1 review setting and a C1 stretch setting. Progress is stored in the browser only.
 
-Plain HTML, CSS and JavaScript. No build step. `data.js` holds all the content. Fonts are bundled in `fonts/` so it works offline. Open `index.html` or serve the folder.
+A Suomeksi button under the title switches the whole site to Finnish: `data-fi.js` holds the Finnish decks, grammar, person-conjugated verbs, phrases, game data and a Suomipop station, `lang.js` swaps it in, and `fi.js` swaps the site's own words. Progress is kept separately per language. På svenska switches back.
+
+Plain HTML, CSS and JavaScript. No build step. `data.js` holds all the Swedish content. Fonts are bundled in `fonts/` so it works offline. Open `index.html` or serve the folder.
 
 Sister site of Le Petit Observatoire, the French one.

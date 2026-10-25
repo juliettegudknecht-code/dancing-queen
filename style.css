@@ -475,3 +475,4 @@ input[type=text]:focus{outline:3px solid var(--pink)}
 body.native .tabs{background:rgba(255,255,255,.97); border-top-color:#dfe3f3}
 body.native .tab{color:#7b7fa8} body.native .tab.on{color:var(--pink)}
 body.native .appbar{background:rgba(20,26,74,.94); border-bottom-color:#2a1f6e; color:#fff}
+.fibtn{background:#9fd8ff; box-shadow:0 4px 0 #3b8fd6; margin-left:8px}

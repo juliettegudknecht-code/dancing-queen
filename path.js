@@ -4,7 +4,7 @@
   const L = window.DQ; if (!L) return;
   const { $, $$, esc } = L;
   const DECKS = window.DQ_DECKS || [];
-  const state = () => { try { return JSON.parse(localStorage.getItem('dq_v1') || '{}'); } catch (e) { return {}; } };
+  const state = () => { try { return JSON.parse(localStorage.getItem(window.DQ_LANG === 'fi' ? 'dq_fi_v1' : 'dq_v1') || '{}'); } catch (e) { return {}; } };
   const solid = (S, d) => d.items.filter((_, i) => (S.boxes && S.boxes[d.id + ':' + i] || 0) >= 3).length;
 
   // ---- streak: consecutive days ending today ----

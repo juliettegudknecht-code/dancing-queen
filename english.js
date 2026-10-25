@@ -67,8 +67,9 @@
     [/^Vad kostar (.+)\? Lyssna och välj varan\.$/, m => `How much is ${m[1]}? Listen and pick the item.`],
     [/^Vad kostar (.+)\?$/, m => `What costs ${m[1]}?`],
     [/^Hon har på sig: (.+)\.$/, m => `She is wearing: ${m[1]}.`],
-    [/^Planeten (.+)\. Hitta varje svenskt ord och dess engelska tvilling\.$/, m => `Planet ${m[1]}. Find each Swedish word and its English twin.`],
-    [/^\(att (.+), (presens|preteritum|perfekt|futurum)\)$/, m => `(att ${m[1]}, ${MAP[m[2]]})`]
+    [/^Planeten (.+)\. Hitta varje svenskt ord och dess engelska tvilling\.$/, m => `Planet ${m[1]}. Find each ${LANG === 'fi' ? 'Finnish' : 'Swedish'} word and its English twin.`],
+    [/^\(att (.+), (presens|preteritum|perfekt|futurum)\)$/, m => `(att ${m[1]}, ${MAP[m[2]]})`],
+    [/^\((.+), (preesens|imperfekti|perfekti|konditionaali)\)$/, m => `(${m[1]}, ${({ preesens: 'present', imperfekti: 'past', perfekti: 'perfect', konditionaali: 'conditional' })[m[2]]})`]
   ];
   const SKIP = '.tr-pop, #nowPlaying, .station small, .accents, .langbtn';
   const head = sv => sv.replace(/\s*\([^)]*\)\s*$/, '').trim();
@@ -78,11 +79,12 @@
   (window.DQ_VERBS || []).forEach(v => { DICT[v.inf] = v.en; DICT['att ' + v.inf] = v.en; });
   (window.DQ_DECKS || []).forEach(d => { DICT[d.name] = d.en.charAt(0).toUpperCase() + d.en.slice(1); });
   let CACHE = {}; try { CACHE = JSON.parse(localStorage.getItem('dq_tr') || '{}'); } catch (e) {}
-  const SVISH = /[åäöÅÄÖ]|\b(och|att|är|inte|jag|du|han|hon|vi|ni|de|det|den|en|ett|på|i|med|för|som|har|kan|ska|var|till|av|om|men|så|nu|här|där|från|efter|under|över|vid|utan|mellan|sedan|redan|också|bara|alla|mycket|kommer|blir|gör|säger|vill|måste|kanske|ja|nej|tack|hej)\b/i;
+  const LANG = window.DQ_LANG || 'sv';
+  const SVISH = /[åäöÅÄÖ]|\b(och|att|är|inte|jag|du|han|hon|vi|ni|de|det|den|en|ett|på|i|med|för|som|har|kan|ska|var|till|av|om|men|så|nu|här|där|från|efter|under|över|vid|utan|mellan|sedan|redan|också|bara|alla|mycket|kommer|blir|gör|säger|vill|måste|kanske|ja|nej|tack|hej|ja|on|ei|minä|sinä|hän|me|te|he|että|mutta|kun|jos|tämä|se|olen|olet|kanssa|myös|vain|nyt|sitten|kyllä|kiitos|hei)\b/i;
   async function online(t) {
     if (CACHE[t]) return CACHE[t];
     try {
-      const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=sv&tl=en&dt=t&q=' + encodeURIComponent(t));
+      const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + LANG + '&tl=en&dt=t&q=' + encodeURIComponent(t));
       if (r.ok) { const j = await r.json(); const out = (j[0] || []).map(x => x[0]).join(''); if (out) { CACHE[t] = out; try { localStorage.setItem('dq_tr', JSON.stringify(CACHE)); } catch (e) {} return out; } }
     } catch (e) {}
     return null;
@@ -103,7 +105,8 @@
     nodes.forEach(n => {
       const p = n.parentElement; if (!p || p.closest(SKIP) || p.closest('script,style')) return;
       if (n.__fr != null) return;
-      const out = tr(n.nodeValue);
+      // in Finnish mode fi.js keeps the Swedish original on __sv, and the English map is keyed by Swedish
+      const out = tr(n.__sv != null ? n.__sv : n.nodeValue);
       if (out != null) { n.__fr = n.nodeValue; n.nodeValue = out; }
       else if (n.nodeValue.trim().length > 1 && /[a-zA-ZåäöÅÄÖ]/.test(n.nodeValue) && SVISH.test(n.nodeValue)) {
         const orig = n.nodeValue; n.__fr = orig;
@@ -111,7 +114,7 @@
       }
       else if (n.nodeValue.trim() === '?' && p.closest('.q') && /What does|How do you say/.test(p.closest('.q').textContent)) { n.__fr = n.nodeValue; n.nodeValue = /What does/.test(p.closest('.q').textContent) ? ' mean?' : '?'; }
     });
-    root.querySelectorAll && root.querySelectorAll('[placeholder]').forEach(el => { if (el.__fr == null && MAP[el.placeholder]) { el.__fr = el.placeholder; el.placeholder = MAP[el.placeholder]; } });
+    root.querySelectorAll && root.querySelectorAll('[placeholder]').forEach(el => { const k = el.__svp != null ? el.__svp : el.placeholder; if (el.__fr == null && MAP[k]) { el.__fr = el.placeholder; el.placeholder = MAP[k]; } });
   }
   function restore(root) {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -127,4 +130,7 @@
     if (on) { apply(document.body); obs.observe(document.body, { childList: true, subtree: true }); btn.textContent = 'Tillbaka till svenska'; }
     else { obs.disconnect(); restore(document.body); btn.textContent = 'In English, please'; }
   };
+  // Finnish-only words the Swedish map does not know
+  Object.assign(MAP, { 'preesens': 'present', 'imperfekti': 'past', 'perfekti': 'perfect', 'konditionaali': 'conditional', 'infinitiivi': 'infinitive', 'På svenska': 'På svenska', 'Suomeksi': 'Suomeksi' });
+  if (LANG === 'fi') Object.keys(MAP).forEach(k => { MAP[k] = MAP[k].replace(/Swedish/g, 'Finnish').replace(/Stockholm sales/, 'Helsinki sales').replace(/prices in kronor/, 'prices in euros').replace(/en, ett or plural/, 'the right number and case').replace(/the right en, ett or att/, 'the base form').replace(/with en, ett or att, if it fits/, 'in the base form').replace(/Cinnamon buns, transit passes and platform shoes/, 'Cinnamon buns, transit cards and platform shoes').replace(/Adjectives agree[^.]*\./, 'The adjective follows the noun in number and case.').replace(/Swedish loves the verb in second place/, 'Known information first, new information last').replace(/Think V2 in main clauses and BIFF in subordinate ones/, 'Known information first, new information last'); });
 })();
